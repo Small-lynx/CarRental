@@ -46,20 +46,12 @@ namespace CarRental.Desktop
             };
             DataGridCar.AutoGenerateColumns = false;
             DataGridCar.DataSource = carsBinding;
-
-            //toolStripCar
-            toolStripStatusAllCar.Text = $"Кол-во автомобилей в прокате - {cars.Count}";
-            var countCar = 0;
-            foreach (var item in cars)
-            {
-                if (item.FuelVolume <= 7)
-                {
-                    countCar += 1;
-                }
-            }
-            toolStripStatusLowFuel.Text = $"Кол-во автомобилей с критическим уровнем топлива - {countCar}";
+            CalculationOfChanges();
         }
 
+        /// <summary>
+        /// Заполнение вычисляемых столбцов
+        /// </summary>
         private void DataGridCar_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
             var car = DataGridCar.Rows[e.RowIndex].DataBoundItem as Car;
@@ -77,23 +69,86 @@ namespace CarRental.Desktop
             {
                 e.Value = Math.Round((car.FuelVolume / car.AvgFuelConsumption) * car.RentalCost * 60, 2);
             }
-        }
-
-        private void DataGridCar_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
-        {
 
             if (DataGridCar.Columns[nameof(ColumnFuel)].Index == e.ColumnIndex && e.RowIndex > -1)
             {
-                decimal fuel = decimal.Parse(s: e.Value?.ToString());
-                if (fuel <= 7.0m)
+                e.CellStyle!.BackColor = (decimal)e.Value! <= 7.0m ? Color.Red : Color.Green;
+            }
+        }
+
+        /// <summary>
+        /// Удаление машины
+        /// </summary>
+        private void toolStripButtonDelete_Click(object sender, EventArgs e)
+        {
+            if (DataGridCar.SelectedRows.Count > 0 &&
+                DataGridCar.SelectedRows[0].DataBoundItem is Car car)
+            {
+                if (MessageBox.Show($"Вы действительно хотите удалить машину {car.StateNumber}",
+                    "Удаление машины",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    e.CellStyle.BackColor = Color.Red;
-                }
-                else
-                {
-                    e.CellStyle.BackColor = Color.Green;
+                    var target = cars.FirstOrDefault(x => x.Id == car.Id);
+                    if (target != null)
+                    {
+                        cars.Remove(target);
+                        CalculationOfChanges();
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// Добавление машины
+        /// </summary>
+        private void toolStripButtonAdd_Click(object sender, EventArgs e)
+        {
+            var editForm = new FormEdit();
+            if (editForm.ShowDialog() == DialogResult.OK)
+            {
+                cars.Add(editForm.Car);
+                CalculationOfChanges();
+            }
+        }
+
+        /// <summary>
+        /// Изменение данных машины
+        /// </summary>
+        private void toolStripButtonEdit_Click(object sender, EventArgs e)
+        {
+            if (DataGridCar.SelectedRows.Count > 0 &&
+                DataGridCar.SelectedRows[0].DataBoundItem is Car car)
+            {
+                var editForm = new FormEdit(car);
+                if (editForm.ShowDialog() == DialogResult.OK)
+                {
+                    car.CarMake = editForm.Car.CarMake;
+                    car.StateNumber = editForm.Car.StateNumber;
+                    car.Mileage = editForm.Car.Mileage;
+                    car.AvgFuelConsumption = editForm.Car.AvgFuelConsumption;
+                    car.FuelVolume = editForm.Car.FuelVolume;
+                    car.RentalCost = editForm.Car.RentalCost;
+                    CalculationOfChanges();
+                }
+            }
+        }
+
+        private void CalculationOfChanges()
+        {
+            carsBinding.ResetBindings(false);
+
+            //toolStripCar
+            toolStripStatusAllCar.Text = $"Кол-во автомобилей в прокате - {cars.Count}";
+            var countCar = 0;
+            foreach (var item in cars)
+            {
+                if (item.FuelVolume <= 7)
+                {
+                    countCar += 1;
+                }
+            }
+            toolStripStatusLowFuel.Text = $"Кол-во автомобилей с критическим уровнем топлива - {countCar}";
         }
     }
 }

@@ -30,10 +30,10 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             toolStripCar = new ToolStrip();
-            toolStripButton1 = new ToolStripButton();
-            toolStripButton2 = new ToolStripButton();
+            toolStripButtonAdd = new ToolStripButton();
+            toolStripButtonEdit = new ToolStripButton();
             toolStripSeparator1 = new ToolStripSeparator();
-            toolStripButton3 = new ToolStripButton();
+            toolStripButtonDelete = new ToolStripButton();
             statusStripCar = new StatusStrip();
             toolStripStatusAllCar = new ToolStripStatusLabel();
             toolStripStatusLowFuel = new ToolStripStatusLabel();
@@ -54,44 +54,47 @@
             // toolStripCar
             // 
             toolStripCar.ImageScalingSize = new Size(20, 20);
-            toolStripCar.Items.AddRange(new ToolStripItem[] { toolStripButton1, toolStripButton2, toolStripSeparator1, toolStripButton3 });
+            toolStripCar.Items.AddRange(new ToolStripItem[] { toolStripButtonAdd, toolStripButtonEdit, toolStripSeparator1, toolStripButtonDelete });
             toolStripCar.Location = new Point(0, 0);
             toolStripCar.Name = "toolStripCar";
             toolStripCar.Size = new Size(800, 27);
             toolStripCar.TabIndex = 0;
             toolStripCar.Text = "toolStrip1";
             // 
-            // toolStripButton1
+            // toolStripButtonAdd
             // 
-            toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
-            toolStripButton1.ImageTransparentColor = Color.Magenta;
-            toolStripButton1.Name = "toolStripButton1";
-            toolStripButton1.Size = new Size(29, 24);
-            toolStripButton1.Text = "toolStripButton1";
+            toolStripButtonAdd.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButtonAdd.Image = (Image)resources.GetObject("toolStripButtonAdd.Image");
+            toolStripButtonAdd.ImageTransparentColor = Color.Magenta;
+            toolStripButtonAdd.Name = "toolStripButtonAdd";
+            toolStripButtonAdd.Size = new Size(80, 24);
+            toolStripButtonAdd.Text = "Добавить";
+            toolStripButtonAdd.Click += toolStripButtonAdd_Click;
             // 
-            // toolStripButton2
+            // toolStripButtonEdit
             // 
-            toolStripButton2.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolStripButton2.Image = (Image)resources.GetObject("toolStripButton2.Image");
-            toolStripButton2.ImageTransparentColor = Color.Magenta;
-            toolStripButton2.Name = "toolStripButton2";
-            toolStripButton2.Size = new Size(29, 24);
-            toolStripButton2.Text = "toolStripButton2";
+            toolStripButtonEdit.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButtonEdit.Image = (Image)resources.GetObject("toolStripButtonEdit.Image");
+            toolStripButtonEdit.ImageTransparentColor = Color.Magenta;
+            toolStripButtonEdit.Name = "toolStripButtonEdit";
+            toolStripButtonEdit.Size = new Size(82, 24);
+            toolStripButtonEdit.Text = "Изменить";
+            toolStripButtonEdit.Click += toolStripButtonEdit_Click;
             // 
             // toolStripSeparator1
             // 
             toolStripSeparator1.Name = "toolStripSeparator1";
             toolStripSeparator1.Size = new Size(6, 27);
             // 
-            // toolStripButton3
+            // toolStripButtonDelete
             // 
-            toolStripButton3.DisplayStyle = ToolStripItemDisplayStyle.Image;
-            toolStripButton3.Image = (Image)resources.GetObject("toolStripButton3.Image");
-            toolStripButton3.ImageTransparentColor = Color.Magenta;
-            toolStripButton3.Name = "toolStripButton3";
-            toolStripButton3.Size = new Size(29, 24);
-            toolStripButton3.Text = "toolStripButton3";
+            toolStripButtonDelete.DisplayStyle = ToolStripItemDisplayStyle.Text;
+            toolStripButtonDelete.Image = (Image)resources.GetObject("toolStripButtonDelete.Image");
+            toolStripButtonDelete.ImageTransparentColor = Color.Magenta;
+            toolStripButtonDelete.Name = "toolStripButtonDelete";
+            toolStripButtonDelete.Size = new Size(69, 24);
+            toolStripButtonDelete.Text = "Удалить";
+            toolStripButtonDelete.Click += toolStripButtonDelete_Click;
             // 
             // statusStripCar
             // 
@@ -123,13 +126,14 @@
             DataGridCar.Columns.AddRange(new DataGridViewColumn[] { ColumnMake, ColumnNumber, ColumnMileage, ColumnAvgFuel, ColumnFuel, ColumnCost, ColumnRangeFuel, ColumnRentalAmount });
             DataGridCar.Dock = DockStyle.Fill;
             DataGridCar.Location = new Point(0, 27);
+            DataGridCar.MultiSelect = false;
             DataGridCar.Name = "DataGridCar";
             DataGridCar.ReadOnly = true;
             DataGridCar.RowHeadersWidth = 51;
+            DataGridCar.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             DataGridCar.Size = new Size(800, 397);
             DataGridCar.TabIndex = 2;
             DataGridCar.CellFormatting += DataGridCar_CellFormatting;
-            DataGridCar.CellPainting += DataGridCar_CellPainting;
             // 
             // ColumnMake
             // 
@@ -223,10 +227,10 @@
         #endregion
 
         private ToolStrip toolStripCar;
-        private ToolStripButton toolStripButton1;
-        private ToolStripButton toolStripButton2;
+        private ToolStripButton toolStripButtonAdd;
+        private ToolStripButton toolStripButtonEdit;
         private ToolStripSeparator toolStripSeparator1;
-        private ToolStripButton toolStripButton3;
+        private ToolStripButton toolStripButtonDelete;
         private StatusStrip statusStripCar;
         private ToolStripStatusLabel toolStripStatusAllCar;
         private ToolStripStatusLabel toolStripStatusLowFuel;
