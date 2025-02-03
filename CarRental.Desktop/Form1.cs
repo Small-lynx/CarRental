@@ -14,7 +14,7 @@ namespace CarRental.Desktop
                 new Car
                 {
                     CarMake = "Хёндай крета",
-                    StateNumber = "AA123E",
+                    StateNumber = "A123AE95",
                     Mileage = 12580,
                     AvgFuelConsumption = 4.8m,
                     FuelVolume = 12.0m,
@@ -23,7 +23,7 @@ namespace CarRental.Desktop
                 new Car
                 {
                     CarMake = "Лада веста",
-                    StateNumber = "BB456K",
+                    StateNumber = "B456BK165",
                     Mileage = 15967,
                     AvgFuelConsumption = 4.6m,
                     FuelVolume = 19.2m,
@@ -32,7 +32,7 @@ namespace CarRental.Desktop
                 new Car
                 {
                     CarMake = "Митсубиси аутлендер",
-                    StateNumber = "CC789M",
+                    StateNumber = "C789CM01",
                     Mileage = 9046,
                     AvgFuelConsumption = 5.1m,
                     FuelVolume = 3.0m,
@@ -140,14 +140,7 @@ namespace CarRental.Desktop
 
             //toolStripCar
             toolStripStatusAllCar.Text = $"Кол-во автомобилей в прокате - {cars.Count}";
-            var countCar = 0;
-            foreach (var item in cars)
-            {
-                if (item.FuelVolume <= 7)
-                {
-                    countCar += 1;
-                }
-            }
+            var countCar = cars.Where(x => x.FuelVolume <= 7).Count();
             toolStripStatusLowFuel.Text = $"Кол-во автомобилей с критическим уровнем топлива - {countCar}";
         }
     }

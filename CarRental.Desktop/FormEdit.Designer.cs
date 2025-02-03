@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             panel1 = new Panel();
             label1 = new Label();
             label2 = new Label();
@@ -44,11 +45,13 @@
             label7 = new Label();
             buttonOK = new Button();
             buttonCansel = new Button();
+            errorFilling = new ErrorProvider(components);
             panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numericMileage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericAvgFuelConumption).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericFuelVolume).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericRentalCost).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)errorFilling).BeginInit();
             SuspendLayout();
             // 
             // panel1
@@ -90,18 +93,16 @@
             textBoxCarMake.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 204);
             textBoxCarMake.Location = new Point(216, 208);
             textBoxCarMake.Name = "textBoxCarMake";
-            textBoxCarMake.Size = new Size(296, 34);
+            textBoxCarMake.Size = new Size(264, 34);
             textBoxCarMake.TabIndex = 2;
-            textBoxCarMake.TextChanged += textBoxCarMake_TextChanged;
             // 
             // textBoxStateNumber
             // 
             textBoxStateNumber.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 204);
             textBoxStateNumber.Location = new Point(216, 250);
             textBoxStateNumber.Name = "textBoxStateNumber";
-            textBoxStateNumber.Size = new Size(296, 34);
+            textBoxStateNumber.Size = new Size(264, 34);
             textBoxStateNumber.TabIndex = 4;
-            textBoxStateNumber.TextChanged += textBoxStateNumber_TextChanged;
             // 
             // label3
             // 
@@ -128,20 +129,21 @@
             numericMileage.Increment = new decimal(new int[] { 50, 0, 0, 0 });
             numericMileage.Location = new Point(216, 293);
             numericMileage.Maximum = new decimal(new int[] { 450000, 0, 0, 0 });
+            numericMileage.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericMileage.Name = "numericMileage";
             numericMileage.Size = new Size(150, 27);
             numericMileage.TabIndex = 7;
             numericMileage.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            numericMileage.ValueChanged += numericMileage_ValueChanged;
             // 
             // numericAvgFuelConumption
             // 
+            numericAvgFuelConumption.DecimalPlaces = 2;
             numericAvgFuelConumption.Location = new Point(216, 330);
+            numericAvgFuelConumption.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericAvgFuelConumption.Name = "numericAvgFuelConumption";
             numericAvgFuelConumption.Size = new Size(150, 27);
             numericAvgFuelConumption.TabIndex = 9;
             numericAvgFuelConumption.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            numericAvgFuelConumption.ValueChanged += numericAvgFuelConumption_ValueChanged;
             // 
             // label5
             // 
@@ -155,12 +157,13 @@
             // 
             // numericFuelVolume
             // 
+            numericFuelVolume.DecimalPlaces = 2;
             numericFuelVolume.Location = new Point(216, 368);
+            numericFuelVolume.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericFuelVolume.Name = "numericFuelVolume";
             numericFuelVolume.Size = new Size(150, 27);
             numericFuelVolume.TabIndex = 11;
             numericFuelVolume.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            numericFuelVolume.ValueChanged += numericFuelVolume_ValueChanged;
             // 
             // label6
             // 
@@ -174,12 +177,13 @@
             // 
             // numericRentalCost
             // 
+            numericRentalCost.DecimalPlaces = 2;
             numericRentalCost.Location = new Point(216, 408);
+            numericRentalCost.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericRentalCost.Name = "numericRentalCost";
             numericRentalCost.Size = new Size(150, 27);
             numericRentalCost.TabIndex = 13;
             numericRentalCost.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            numericRentalCost.ValueChanged += numericRentalCost_ValueChanged;
             // 
             // label7
             // 
@@ -211,6 +215,10 @@
             buttonCansel.Text = "Cansel";
             buttonCansel.UseVisualStyleBackColor = true;
             // 
+            // errorFilling
+            // 
+            errorFilling.ContainerControl = this;
+            // 
             // FormEdit
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -241,6 +249,7 @@
             ((System.ComponentModel.ISupportInitialize)numericAvgFuelConumption).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericFuelVolume).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericRentalCost).EndInit();
+            ((System.ComponentModel.ISupportInitialize)errorFilling).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -263,5 +272,6 @@
         private Label label7;
         private Button buttonOK;
         private Button buttonCansel;
+        private ErrorProvider errorFilling;
     }
 }
