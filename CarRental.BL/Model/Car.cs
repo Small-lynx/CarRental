@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarRental.Desktop
+namespace CarRental.BL.Model
 {
     /// <summary>
     /// Машина для проката
@@ -35,7 +35,7 @@ namespace CarRental.Desktop
         /// Пробег
         /// </summary>
         [Required(ErrorMessage = "Не заполнен пробег машины")]
-        
+
         public decimal Mileage { get; set; }
 
         /// <summary>

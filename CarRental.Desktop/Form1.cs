@@ -1,52 +1,22 @@
+using CarRental.BL;
+using CarRental.BL.Model;
 using System.Drawing.Text;
 
 namespace CarRental.Desktop
 {
     public partial class MainForm : Form
     {
-        private readonly List<Car> cars;
+        //private readonly List<Car> cars;
         private readonly BindingSource carsBinding;
+        private readonly CarManeger carManeger;
+
         public MainForm()
         {
             InitializeComponent();
-            cars =
-            [
-                new Car
-                {
-                    CarMake = "Хёндай крета",
-                    StateNumber = "A123AE95",
-                    Mileage = 12580,
-                    AvgFuelConsumption = 4.8m,
-                    FuelVolume = 12.0m,
-                    RentalCost = 11.48m
-                },
-                new Car
-                {
-                    CarMake = "Лада веста",
-                    StateNumber = "B456BK165",
-                    Mileage = 15967,
-                    AvgFuelConsumption = 4.6m,
-                    FuelVolume = 19.2m,
-                    RentalCost = 12.56m
-                },
-                new Car
-                {
-                    CarMake = "Митсубиси аутлендер",
-                    StateNumber = "C789CM01",
-                    Mileage = 9046,
-                    AvgFuelConsumption = 5.1m,
-                    FuelVolume = 3.0m,
-                    RentalCost = 15.34m
-                },
-            ];
-
-            carsBinding = new()
-            {
-                DataSource = cars
-            };
+            carsBinding = new BindingSource();
+            carManeger = new CarManeger();
             DataGridCar.AutoGenerateColumns = false;
             DataGridCar.DataSource = carsBinding;
-            CalculationOfChanges();
         }
 
         /// <summary>
@@ -79,7 +49,7 @@ namespace CarRental.Desktop
         /// <summary>
         /// Удаление машины
         /// </summary>
-        private void toolStripButtonDelete_Click(object sender, EventArgs e)
+        private async void toolStripButtonDelete_Click(object sender, EventArgs e)
         {
             if (DataGridCar.SelectedRows.Count > 0 &&
                 DataGridCar.SelectedRows[0].DataBoundItem is Car car)
@@ -89,12 +59,8 @@ namespace CarRental.Desktop
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    var target = cars.FirstOrDefault(x => x.Id == car.Id);
-                    if (target != null)
-                    {
-                        cars.Remove(target);
-                        CalculationOfChanges();
-                    }
+                    await carManeger.Delete(car.Id, CancellationToken.None);
+                    await CalculationOfChanges(CancellationToken.None);
                 }
             }
         }
@@ -102,20 +68,26 @@ namespace CarRental.Desktop
         /// <summary>
         /// Добавление машины
         /// </summary>
-        private void toolStripButtonAdd_Click(object sender, EventArgs e)
+        private async void toolStripButtonAdd_Click(object sender, EventArgs e)
         {
             var editForm = new FormEdit();
             if (editForm.ShowDialog() == DialogResult.OK)
             {
-                cars.Add(editForm.Car);
-                CalculationOfChanges();
+                await carManeger.Add(new CarRequest(editForm.Car.CarMake,
+                    editForm.Car.StateNumber,
+                    editForm.Car.Mileage,
+                    editForm.Car.AvgFuelConsumption,
+                    editForm.Car.FuelVolume,
+                    editForm.Car.RentalCost),
+                    CancellationToken.None);
+                await CalculationOfChanges(CancellationToken.None);
             }
         }
 
         /// <summary>
         /// Изменение данных машины
         /// </summary>
-        private void toolStripButtonEdit_Click(object sender, EventArgs e)
+        private async void toolStripButtonEdit_Click(object sender, EventArgs e)
         {
             if (DataGridCar.SelectedRows.Count > 0 &&
                 DataGridCar.SelectedRows[0].DataBoundItem is Car car)
@@ -123,25 +95,35 @@ namespace CarRental.Desktop
                 var editForm = new FormEdit(car);
                 if (editForm.ShowDialog() == DialogResult.OK)
                 {
-                    car.CarMake = editForm.Car.CarMake;
-                    car.StateNumber = editForm.Car.StateNumber;
-                    car.Mileage = editForm.Car.Mileage;
-                    car.AvgFuelConsumption = editForm.Car.AvgFuelConsumption;
-                    car.FuelVolume = editForm.Car.FuelVolume;
-                    car.RentalCost = editForm.Car.RentalCost;
-                    CalculationOfChanges();
+                    await carManeger.Edit(car.Id, new CarRequest(editForm.Car.CarMake,
+                        editForm.Car.StateNumber,
+                        editForm.Car.Mileage,
+                        editForm.Car.AvgFuelConsumption,
+                        editForm.Car.FuelVolume,
+                        editForm.Car.RentalCost),
+                        CancellationToken.None);
+                    await CalculationOfChanges(CancellationToken.None);
                 }
             }
         }
 
-        private void CalculationOfChanges()
+        private async Task CalculationOfChanges(CancellationToken cancellationToken)
         {
-            carsBinding.ResetBindings(false);
-
+            var result = await carManeger.GetStatistic(CancellationToken.None);
             //toolStripCar
-            toolStripStatusAllCar.Text = $"Кол-во автомобилей в прокате - {cars.Count}";
-            var countCar = cars.Where(x => x.FuelVolume <= 7).Count();
-            toolStripStatusLowFuel.Text = $"Кол-во автомобилей с критическим уровнем топлива - {countCar}";
+            toolStripStatusAllCar.Text = $"Кол-во автомобилей в прокате - {result.countRent}";
+            toolStripStatusLowFuel.Text = $"Кол-во автомобилей с критическим уровнем топлива - {result.countFuel}";
+
+            carsBinding.DataSource = await carManeger.GetCars(CancellationToken.None);
+            carsBinding.ResetBindings(false);
+        }
+
+        /// <summary>
+        /// Действия при загрузке формы
+        /// </summary>
+        private async void MainForm_Load(object sender, EventArgs e)
+        {
+            await CalculationOfChanges(CancellationToken.None);
         }
     }
 }

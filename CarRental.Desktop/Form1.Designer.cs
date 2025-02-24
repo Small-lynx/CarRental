@@ -215,6 +215,7 @@
             Controls.Add(toolStripCar);
             Name = "MainForm";
             Text = "Прокат автомобилей";
+            Load += MainForm_Load;
             toolStripCar.ResumeLayout(false);
             toolStripCar.PerformLayout();
             statusStripCar.ResumeLayout(false);
