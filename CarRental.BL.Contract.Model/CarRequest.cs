@@ -1,4 +1,4 @@
-﻿namespace CarRental.BL.Model;
+﻿namespace CarRental.BL.Contract.Model;
 /// <summary>
 /// Данные машины
 /// </summary>

@@ -1,20 +1,18 @@
-using CarRental.BL;
-using CarRental.BL.Model;
-using System.Drawing.Text;
-
+using CarRental.BL.Contract;
+using CarRental.BL.Contract.Model;
 namespace CarRental.Desktop
 {
     public partial class MainForm : Form
     {
         //private readonly List<Car> cars;
         private readonly BindingSource carsBinding;
-        private readonly CarManeger carManeger;
+        private readonly ICarManeger carManeger;
 
-        public MainForm()
+        public MainForm(ICarManeger carManeger)
         {
             InitializeComponent();
             carsBinding = new BindingSource();
-            carManeger = new CarManeger();
+            this.carManeger = carManeger;
             DataGridCar.AutoGenerateColumns = false;
             DataGridCar.DataSource = carsBinding;
         }

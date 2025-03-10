@@ -1,4 +1,4 @@
-﻿using CarRental.BL.Model;
+﻿using CarRental.BL.Contract.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

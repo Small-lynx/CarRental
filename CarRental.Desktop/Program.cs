@@ -1,3 +1,6 @@
+using CarRental.BL;
+using CarRental.Storage.InMemory;
+
 namespace CarRental.Desktop
 {
     internal static class Program
@@ -11,7 +14,9 @@ namespace CarRental.Desktop
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm());
+            var storage = new CarInMemoryStorage();
+            var manager = new CarManeger(storage);
+            Application.Run(new MainForm(manager));
         }
     }
 }

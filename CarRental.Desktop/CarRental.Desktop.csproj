@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CarRental.BL\CarRental.BL.csproj" />
+    <ProjectReference Include="..\CarRental.Storage.InMemory\CarRental.Storage.InMemory.csproj" />
   </ItemGroup>
 
   <ItemGroup>

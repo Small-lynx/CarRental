@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CarRental.BL.Model
+namespace CarRental.BL.Contract.Model
 {
     /// <summary>
     /// Статистика проката
