@@ -4,7 +4,6 @@ namespace CarRental.Desktop
 {
     public partial class MainForm : Form
     {
-        //private readonly List<Car> cars;
         private readonly BindingSource carsBinding;
         private readonly ICarManeger carManeger;
 

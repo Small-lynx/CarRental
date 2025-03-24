@@ -3,7 +3,7 @@
 namespace CarRental.BL.Contract
 {
     /// <summary>
-    /// Менеджер по управлению <see cref="CarRental"/>
+    /// Менеджер по управлению <see cref="Car"/>
     /// </summary>
     public interface ICarManeger
     {
@@ -23,7 +23,7 @@ namespace CarRental.BL.Contract
         Task<Car> Edit(Guid ID, CarRequest request, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Возвращает список <see cref="CarRental"/>
+        /// Возвращает список <see cref="Car"/>
         /// </summary>
         Task<IReadOnlyCollection<Car>> GetCars(CancellationToken cancellationToken);
 

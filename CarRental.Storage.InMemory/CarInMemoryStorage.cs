@@ -1,11 +1,6 @@
 ﻿using CarRental.BL.Contract.Model;
 using CarRental.Storage.Contract;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CarRental.Storage.InMemory
 {
@@ -20,6 +15,7 @@ namespace CarRental.Storage.InMemory
             [
                  new Car
                 {
+                    Id = Guid.NewGuid(),
                     CarMake = "Хёндай крета",
                     StateNumber = "A123AE95",
                     Mileage = 12580,
@@ -29,6 +25,7 @@ namespace CarRental.Storage.InMemory
                 },
                 new Car
                 {
+                    Id = Guid.NewGuid(),
                     CarMake = "Лада веста",
                     StateNumber = "B456BK165",
                     Mileage = 15967,
@@ -38,6 +35,7 @@ namespace CarRental.Storage.InMemory
                 },
                 new Car
                 {
+                    Id = Guid.NewGuid(),
                     CarMake = "Митсубиси аутлендер",
                     StateNumber = "C789CM01",
                     Mileage = 9046,

@@ -1,24 +1,13 @@
 ﻿using CarRental.BL.Contract;
 using CarRental.BL.Contract.Model;
 using CarRental.Storage.Contract;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CarRental.BL
 {
     /// <inheritdoc cref="ICarManeger"/>
-    public partial class CarManeger : ICarManeger
+    public partial class CarManeger(IStorage<Car> storage) : ICarManeger
     {
-        private readonly IStorage<Car> storage;
-
-        public CarManeger(IStorage<Car> storage)
-        {
-            this.storage = storage;
-        }
+        private readonly IStorage<Car> storage = storage;
 
         Task<IReadOnlyCollection<Car>> ICarManeger.GetCars(CancellationToken cancellationToken)
             => storage.GetAll(cancellationToken);
@@ -39,9 +28,14 @@ namespace CarRental.BL
 
         async Task<Car> ICarManeger.Edit(Guid ID, CarRequest request, CancellationToken cancellationToken)
         {
-            var item = Validation(ID, request);
-            await storage.Edit(ID, item, cancellationToken);
-            return item;
+            if (storage.Get(ID, cancellationToken) != null)
+            {
+                var item = Validation(ID, request);
+                await storage.Edit(ID, item, cancellationToken);
+                return item;
+            }
+            throw new InvalidOperationException("Не удалось найти машину с данным ID");
+            
         }
         async Task<CarStatustic> ICarManeger.GetStatistic(CancellationToken cancellationToken)
         {

@@ -35,7 +35,6 @@ namespace CarRental.BL.Contract.Model
         /// Пробег
         /// </summary>
         [Required(ErrorMessage = "Не заполнен пробег машины")]
-
         public decimal Mileage { get; set; }
 
         /// <summary>
