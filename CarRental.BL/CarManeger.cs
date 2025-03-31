@@ -1,48 +1,84 @@
 ﻿using CarRental.BL.Contract;
 using CarRental.BL.Contract.Model;
 using CarRental.Storage.Contract;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 
 namespace CarRental.BL
 {
     /// <inheritdoc cref="ICarManeger"/>
-    public partial class CarManeger(IStorage<Car> storage) : ICarManeger
+    public partial class CarManeger(IStorage<Car> storage, ILogger logger) : ICarManeger
     {
         private readonly IStorage<Car> storage = storage;
+        private readonly ILogger logger = logger;
+        private readonly Stopwatch stopwatch = new();
 
         Task<IReadOnlyCollection<Car>> ICarManeger.GetCars(CancellationToken cancellationToken)
-            => storage.GetAll(cancellationToken);
+        {
+            stopwatch.Restart();
+            var items = storage.GetAll(cancellationToken);
+            stopwatch.Stop();
+            logger.LogInformation("Получен список всех автомобилей");
+            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
+            return items;
+        }
 
         Task<Car> ICarManeger.Add(CarRequest request, CancellationToken cancellationToken)
         {
+            stopwatch.Restart();
             var item = Validation(Guid.Empty, request);
             storage.Add(item, cancellationToken);
+            stopwatch.Stop();
+            logger.LogInformation("Добавлен новый автомобиль с ID {Id} - {@item}", item.Id, item);
+            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
             return Task.FromResult(item);
         }
 
         async Task ICarManeger.Delete(Guid ID, CancellationToken cancellationToken)
         {
-            var item = await storage.Get(ID, cancellationToken) ??
+            stopwatch.Restart();
+            var item = await storage.Get(ID, cancellationToken);
+            if (item == null)
+            {
+                stopwatch.Stop();
+                logger.LogError("Не удалось найти машину с данным ID - {@id}", ID);
+                logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
                 throw new InvalidOperationException("Не удалось найти машину с данным ID");
+            }
             await storage.Delete(item.Id, cancellationToken);
+            stopwatch.Stop();
+            logger.LogInformation("Удален автомобиль с ID {Id} - {@item}", ID, item);
+            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
         }
 
         async Task<Car> ICarManeger.Edit(Guid ID, CarRequest request, CancellationToken cancellationToken)
         {
+            stopwatch.Restart();
             if (storage.Get(ID, cancellationToken) != null)
             {
                 var item = Validation(ID, request);
                 await storage.Edit(ID, item, cancellationToken);
+                stopwatch.Stop();
+                logger.LogInformation("Изменен автомобиль с ID {Id} - {@item}", ID, item);
+                logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
                 return item;
             }
+            stopwatch.Stop();
+            logger.LogError("Не удалось найти машину с данным ID - {@id}", ID);
+            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
             throw new InvalidOperationException("Не удалось найти машину с данным ID");
             
         }
         async Task<CarStatustic> ICarManeger.GetStatistic(CancellationToken cancellationToken)
         {
+            stopwatch.Restart();
             var items = await storage.GetAll(cancellationToken);
             var countRent = items.Count;
             var countFuel = items.Where(x => x.FuelVolume <= 7).Count();
 
+            stopwatch.Stop();
+            logger.LogInformation("Получена статистика авомобилей. Количество машин в прокате - {count}, кол-во машин с критическим уровнем топлива - {countFuel}", countRent, countFuel);
+            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
             return new CarStatustic(countRent, countFuel);
         }
 

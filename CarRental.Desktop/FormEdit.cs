@@ -16,8 +16,8 @@ namespace CarRental.Desktop
         public FormEdit(Car? source = null)
         {
             InitializeComponent();
-            Car = source == null 
-                ? new Car() { Id = Guid.NewGuid() } 
+            Car = source == null
+                ? new Car(){ Id = Guid.NewGuid() } 
                 : source.Clone();
 
             textBoxCarMake.AddBinding(x => x.Text, Car, x => x.CarMake, errorFilling);

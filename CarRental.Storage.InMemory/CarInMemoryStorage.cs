@@ -1,15 +1,20 @@
 ﻿using CarRental.BL.Contract.Model;
 using CarRental.Storage.Contract;
+using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace CarRental.Storage.InMemory
 {
     public class CarInMemoryStorage : IStorage<Car>
     {
         private readonly List<Car> items;
+        private readonly ILogger logger;
+        private readonly Stopwatch stopwatch = new();
 
-        public CarInMemoryStorage()
+        public CarInMemoryStorage(ILogger logger)
         {
+            this.logger = logger;
             items = new List<Car>();
             items =
             [
@@ -48,27 +53,53 @@ namespace CarRental.Storage.InMemory
 
         Task IStorage<Car>.Add(Car item, CancellationToken cancellationToken)
         {
+            stopwatch.Restart();
             items.Add(item);
+            stopwatch.Stop();
+            logger.LogInformation("Новый автомобиль с ID {Id}  добавлен в память - {@item}", item.Id, item);
+            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
             return Task.CompletedTask;
         }
 
         Task IStorage<Car>.Delete(Guid ID, CancellationToken cancellationToken)
         {
+            stopwatch.Restart();
             var item = items.First(x => x.Id == ID);
             items.Remove(item);
+            stopwatch.Stop();
+            logger.LogInformation("Автомобиль с ID {Id}  удален из памяти - {@item}", item.Id, item);
+            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
             return Task.CompletedTask;
         }
 
         Task IStorage<Car>.Edit(Guid ID, Car item, CancellationToken cancellationToken)
         {
+            stopwatch.Restart();
             items[items.IndexOf(items.First(x => x.Id == ID))] = item;
+            stopwatch.Stop();
+            logger.LogInformation("Автомобиль с ID {Id}  изменен в памяти - {@item}", ID, item);
+            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
             return Task.CompletedTask;
         }
 
-        Task<Car?> IStorage<Car>.Get(Guid ID, CancellationToken cancellationToken) 
-            => Task.FromResult(items.FirstOrDefault(x => x.Id == ID));
+        Task<Car?> IStorage<Car>.Get(Guid ID, CancellationToken cancellationToken)
+        {
+            stopwatch.Restart();
+            var item = Task.FromResult(items.FirstOrDefault(x => x.Id == ID));
+            stopwatch.Stop();
+            logger.LogInformation("Автомобиль с ID {Id}  получен из памяти", ID);
+            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
+            return item;
+        }
 
         Task<IReadOnlyCollection<Car>> IStorage<Car>.GetAll(CancellationToken cancellationToken)
-            => Task.FromResult((IReadOnlyCollection<Car>)new ReadOnlyCollection<Car>(items));
+        {
+            stopwatch.Restart();
+            var item = Task.FromResult((IReadOnlyCollection<Car>)new ReadOnlyCollection<Car>(items));
+            stopwatch.Stop();
+            logger.LogInformation("Получен список всех автомобилей из памяти");
+            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
+            return item;
+        }
     }
 }

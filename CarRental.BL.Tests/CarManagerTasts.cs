@@ -1,7 +1,9 @@
 ﻿using CarRental.BL.Contract;
 using CarRental.BL.Contract.Model;
 using CarRental.Storage.Contract;
+using Castle.Core.Logging;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Xunit;
 using Xunit.Sdk;
@@ -12,11 +14,13 @@ namespace CarRental.BL.Tests
     {
         private readonly ICarManeger maneger;
         private readonly Mock<IStorage<Car>> storage;
+        private readonly Mock<Microsoft.Extensions.Logging.ILogger> logger;
 
         public CarManagerTasts() 
         {
             storage = new();
-            maneger = new CarManeger(storage.Object);
+            logger = new();
+            maneger = new CarManeger(storage.Object, logger.Object);
         }
 
         /// <summary>

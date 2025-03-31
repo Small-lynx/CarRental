@@ -1,6 +1,7 @@
 ﻿using CarRental.BL.Contract.Model;
 using CarRental.Storage.Contract;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace CarRental.Storage.InMemory.Tests
@@ -8,9 +9,10 @@ namespace CarRental.Storage.InMemory.Tests
     public class CarInMemoryStorageTests
     {
         private readonly IStorage<Car> storage;
+        private readonly Mock<Microsoft.Extensions.Logging.ILogger> logger;
         public CarInMemoryStorageTests() 
         {
-            storage = new CarInMemoryStorage();
+            storage = new CarInMemoryStorage(logger.Object);
         }
 
         /// <summary>
