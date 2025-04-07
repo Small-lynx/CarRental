@@ -1,7 +1,9 @@
 using CarRental.BL;
 using CarRental.Storage.InMemory;
+using CarRental.Storage.SQL;
 using Serilog;
 using Serilog.Extensions.Logging;
+using System.Configuration;
 
 namespace CarRental.Desktop
 {
@@ -24,7 +26,9 @@ namespace CarRental.Desktop
             var micLogger = new SerilogLoggerFactory(logger)
                 .CreateLogger(nameof(CarRental.Desktop.Program));
 
-            var storage = new CarInMemoryStorage(micLogger);
+            var connectionString = ConfigurationManager.ConnectionStrings["CarRentalConnectionString"]?.ConnectionString;
+
+            var storage = new CarRentalStorage(connectionString, micLogger);
             var manager = new CarManeger(storage, micLogger);
             Application.Run(new MainForm(manager));
         }

@@ -17,7 +17,7 @@ namespace CarRental.Desktop
         {
             InitializeComponent();
             Car = source == null
-                ? new Car(){ Id = Guid.NewGuid() } 
+                ? new Car(){ Id = Guid.NewGuid(),  Mileage = 1, AvgFuelConsumption = 1, FuelVolume = 1, RentalCost = 1 } 
                 : source.Clone();
 
             textBoxCarMake.AddBinding(x => x.Text, Car, x => x.CarMake, errorFilling);
