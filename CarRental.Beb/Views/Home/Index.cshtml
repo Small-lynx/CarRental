@@ -1,0 +1,72 @@
+﻿@using CarRental.BL.Contract.Model
+@{
+    ViewData["Title"] = "Home Page";
+    @model Tuple<IEnumerable<Car>, CarStatustic>
+}
+
+<form action="/edit" method="get">
+    <button type="submit" style="cursor: pointer;">
+        Добавить новый автомобиль
+    </button>
+</form>
+
+<h1>Список машин</h1>
+<table border="1" cellpadding="5" cellspacing="0" class="table table-hover">
+    <tr class="table-active">
+        <th>ID машины</th>
+        <th>Марка машины</th>
+        <th>Гос номер</th>
+        <th>Пробег</th>
+        <th>Средний расход топлива за час</th>
+        <th>Текущий объем топлива</th>
+        <th>Стоимость аренды (за минуту)</th>
+        <th>Запас топлива (ч)</th>
+        <th>Сумма аренды</th>
+        <th>Действия</th>
+    </tr>
+
+    @foreach (var car in Model.Item1)
+    {
+        <tr data-id="@car.Id">
+            <td>@car.Id</td>
+            <td>@car.CarMake</td>
+            <td>@car.StateNumber</td>
+            <td>@car.Mileage</td>
+            <td>@car.AvgFuelConsumption</td>
+            <td>@car.FuelVolume</td>
+            <td>@car.RentalCost</td>
+            <td>@{
+                    var reserve = car.AvgFuelConsumption != 0 ? Math.Round(car.FuelVolume / car.AvgFuelConsumption, 2) : 0;
+                    @reserve
+                }
+            </td>
+            <td>
+                @{
+                    var sum = car.AvgFuelConsumption != 0 ? Math.Round((car.FuelVolume / car.AvgFuelConsumption) * car.RentalCost * 60, 2) : 0;
+                    @sum
+                }
+            </td>
+            <td>
+                <form action="/edit/@car.Id" method="get">
+                    <button type="submit" style="cursor: pointer;">
+                        Редактировать
+                    </button>
+                </form> <br/>
+                <form method="post" action="/delete" style="display:pointer;">
+                    <input type="hidden" name="id" value="@car.Id" />
+                    <input type="submit" value="Удалить" onclick="return confirm('Вы уверены, что хотите удалить эту машину?');" />
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+<div>
+    <div>
+        <label>Кол-во автомобилей в прокате - </label>
+        <span>@Model.Item2.countRent</span>
+    </div>
+    <div>
+        <label>Кол-во автомобилей с критическим уровнем топлива - </label>
+        <span>@Model.Item2.countFuel</span>
+    </div>
+</div>

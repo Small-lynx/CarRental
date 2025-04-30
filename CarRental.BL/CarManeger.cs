@@ -7,7 +7,7 @@ using System.Diagnostics;
 namespace CarRental.BL
 {
     /// <inheritdoc cref="ICarManeger"/>
-    public partial class CarManeger(IStorage<Car> storage, ILogger logger) : ICarManeger
+    public partial class CarManeger(IStorage<Car> storage, ILogger? logger) : ICarManeger
     {
         private readonly IStorage<Car> storage = storage;
         private readonly ILogger logger = logger;
@@ -18,8 +18,18 @@ namespace CarRental.BL
             stopwatch.Restart();
             var items = storage.GetAll(cancellationToken);
             stopwatch.Stop();
-            logger.LogInformation("Получен список всех автомобилей");
-            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
+            logger?.LogInformation("Получен список всех автомобилей");
+            logger?.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
+            return items;
+        }
+
+        Task<Car?> ICarManeger.GetCar(Guid id,CancellationToken cancellationToken)
+        {
+            stopwatch.Restart();
+            var items = storage.Get(id, cancellationToken);
+            stopwatch.Stop();
+            logger?.LogInformation("Получен автомобиль с id {id}", id);
+            logger?.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
             return items;
         }
 
@@ -29,8 +39,8 @@ namespace CarRental.BL
             var item = Validation(Guid.Empty, request);
             storage.Add(item, cancellationToken);
             stopwatch.Stop();
-            logger.LogInformation("Добавлен новый автомобиль с ID {Id} - {@item}", item.Id, item);
-            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
+            logger?.LogInformation("Добавлен новый автомобиль с ID {Id} - {@item}", item.Id, item);
+            logger?.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
             return Task.FromResult(item);
         }
 
@@ -41,14 +51,14 @@ namespace CarRental.BL
             if (item == null)
             {
                 stopwatch.Stop();
-                logger.LogError("Не удалось найти машину с данным ID - {@id}", ID);
-                logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
+                logger?.LogError("Не удалось найти машину с данным ID - {@id}", ID);
+                logger?.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
                 throw new InvalidOperationException("Не удалось найти машину с данным ID");
             }
             await storage.Delete(item.Id, cancellationToken);
             stopwatch.Stop();
-            logger.LogInformation("Удален автомобиль с ID {Id} - {@item}", ID, item);
-            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
+            logger?.LogInformation("Удален автомобиль с ID {Id} - {@item}", ID, item);
+            logger?.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
         }
 
         async Task<Car> ICarManeger.Edit(Guid ID, CarRequest request, CancellationToken cancellationToken)
@@ -59,13 +69,13 @@ namespace CarRental.BL
                 var item = Validation(ID, request);
                 await storage.Edit(ID, item, cancellationToken);
                 stopwatch.Stop();
-                logger.LogInformation("Изменен автомобиль с ID {Id} - {@item}", ID, item);
-                logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
+                logger?.LogInformation("Изменен автомобиль с ID {Id} - {@item}", ID, item);
+                logger?.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
                 return item;
             }
             stopwatch.Stop();
-            logger.LogError("Не удалось найти машину с данным ID - {@id}", ID);
-            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
+            logger?.LogError("Не удалось найти машину с данным ID - {@id}", ID);
+            logger?.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
             throw new InvalidOperationException("Не удалось найти машину с данным ID");
             
         }
@@ -77,8 +87,8 @@ namespace CarRental.BL
             var countFuel = items.Where(x => x.FuelVolume <= 7).Count();
 
             stopwatch.Stop();
-            logger.LogInformation("Получена статистика авомобилей. Количество машин в прокате - {count}, кол-во машин с критическим уровнем топлива - {countFuel}", countRent, countFuel);
-            logger.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
+            logger?.LogInformation("Получена статистика авомобилей. Количество машин в прокате - {count}, кол-во машин с критическим уровнем топлива - {countFuel}", countRent, countFuel);
+            logger?.LogInformation("Метод выполнен за {stopwatch} мс", stopwatch);
             return new CarStatustic(countRent, countFuel);
         }
 

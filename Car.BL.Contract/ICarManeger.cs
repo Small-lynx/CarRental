@@ -28,8 +28,13 @@ namespace CarRental.BL.Contract
         Task<IReadOnlyCollection<Car>> GetCars(CancellationToken cancellationToken);
 
         /// <summary>
-        /// Возвращяет статистику <see cref="CarStatustic"/>
+        /// Получает автомобиль по id
         /// </summary>
+        Task<Car?> GetCar(Guid id, CancellationToken cancellationToken);
+
+        /// <summary>
+            /// Возвращяет статистику <see cref="CarStatustic"/>
+            /// </summary>
         Task<CarStatustic> GetStatistic(CancellationToken cancellationToken);
     }
 }

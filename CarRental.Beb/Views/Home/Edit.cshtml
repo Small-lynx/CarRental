@@ -1,0 +1,36 @@
+﻿@using CarRental.BL.Contract.Model
+@{
+    ViewData["Title"] = "Edit form";
+    @model Car
+}
+<h1>@(Model.Id != Guid.Empty ? "Редактирование объекта" : "Добавление нового объекта")</h1>
+     <form method="post" action="/edit">
+    <label for="Id" style="display:none;">ID машины:</label><br />
+    @Html.TextBoxFor(m => m.Id, new { @style = "display:none;" })<br />
+
+        <label for="carMake">Марка машины:</label><br />    
+        @Html.TextBoxFor(m => m.CarMake)
+    @Html.ValidationMessageFor(m => m.CarMake)<br />
+
+        <label for="stateNumber">Гос номер:</label><br />
+        @Html.TextBoxFor(m => m.StateNumber)
+    @Html.ValidationMessageFor(m => m.StateNumber)<br />
+
+        <label for="mileage">Пробег:</label><br />
+        @Html.TextBoxFor(m => m.Mileage)
+    @Html.ValidationMessageFor(m => m.Mileage)<br />
+
+        <label for="avgFuelConsumption">Средний расход топлива за час:</label><br />
+        @Html.TextBoxFor(m => m.AvgFuelConsumption)
+    @Html.ValidationMessageFor(m => m.AvgFuelConsumption)<br />
+
+        <label for="FuelVolume">Текущий объем топлива:</label><br />
+        @Html.TextBoxFor(m => m.FuelVolume)
+    @Html.ValidationMessageFor(m => m.FuelVolume)<br />
+
+        <label for="rentalCost">Стоимость аренды (за минуту):</label><br />
+        @Html.TextBoxFor(m => m.RentalCost)
+    @Html.ValidationMessageFor(m => m.RentalCost)<br />
+
+    <input type="submit" value="@((Model.Id != Guid.Empty) ? "Сохранить изменения" : "Добавить")" />
+        </form>

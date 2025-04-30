@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CarRental.Storage.SQL
 {
-    public class CarRentalStorage(string connectionString, ILogger logger) : IStorage<Car>
+    public class CarRentalStorage(string connectionString, ILogger? logger) : IStorage<Car>
     {
         private readonly string connectionString = connectionString;
         private readonly ILogger logger = logger;
@@ -20,7 +20,7 @@ namespace CarRental.Storage.SQL
         {
             using var context = new CarRentalContext(connectionString);
             context.Cars.Add(item);
-            logger.LogInformation("Новый автомобиль с ID {Id}  добавлен в БД - {@item}", item.Id, item);
+            logger?.LogInformation("Новый автомобиль с ID {Id}  добавлен в БД - {@item}", item.Id, item);
             await context.SaveChangesAsync(cancellationToken);
         }
 
@@ -29,7 +29,7 @@ namespace CarRental.Storage.SQL
             using var context = new CarRentalContext(connectionString);
             var car = await context.Cars.FirstOrDefaultAsync(x => x.Id == ID, cancellationToken);
             context.Cars.Remove(car);
-            logger.LogInformation("Автомобиль с ID {Id}  удален из БД - {@item}", ID, car);
+            logger?.LogInformation("Автомобиль с ID {Id}  удален из БД - {@item}", ID, car);
             await context.SaveChangesAsync(cancellationToken);
         }
 
@@ -44,7 +44,7 @@ namespace CarRental.Storage.SQL
             car.AvgFuelConsumption = item.AvgFuelConsumption;
             car.FuelVolume = item.FuelVolume;
             car.RentalCost = item.RentalCost;
-            logger.LogInformation("Автомобиль с ID {Id}  изменен в БД - {@item}", ID, car);
+            logger?.LogInformation("Автомобиль с ID {Id}  изменен в БД - {@item}", ID, car);
 
             await context.SaveChangesAsync(cancellationToken);
         }
@@ -53,7 +53,7 @@ namespace CarRental.Storage.SQL
         {
             using var context = new CarRentalContext(connectionString);
             var result = await context.Cars.FirstOrDefaultAsync(x => x.Id == ID, cancellationToken);
-            logger.LogInformation("Автомобиль с ID {Id}  получен из БД", ID);
+            logger?.LogInformation("Автомобиль с ID {Id}  получен из БД", ID);
             return result;
         }
 
@@ -63,7 +63,7 @@ namespace CarRental.Storage.SQL
             var result = await context.Cars
                 .OrderBy(x => x.Id)
                 .ToListAsync(cancellationToken);
-            logger.LogInformation("Получен список всех автомобилей из БД");
+            logger?.LogInformation("Получен список всех автомобилей из БД");
             return result;
         }
     }
