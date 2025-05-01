@@ -10,5 +10,9 @@
     <ProjectReference Include="..\CarRental.BL\CarRental.BL.csproj" />
     <ProjectReference Include="..\CarREntal.Storage.SQL\CarRental.Storage.SQL.csproj" />
   </ItemGroup>
-
+	
+	<ItemGroup>
+		<PackageReference Include="Serilog.Extensions.Logging" Version="9.0.1" />
+		<PackageReference Include="Serilog.Sinks.Seq" Version="9.0.0" />
+	</ItemGroup>
 </Project>
